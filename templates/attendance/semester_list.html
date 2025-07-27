@@ -1,0 +1,129 @@
+{% extends 'attendance/base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Semesters</h2>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSemesterModal">
+        Add Semester
+    </button>
+</div>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Academic Year</th>
+            <th>Number</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for sem in semesters %}
+        <tr>
+            <td>{{ sem.id }}</td>
+            <td>{{ sem.academic_year }}</td>
+            <td>{{ sem.number }}</td>
+            <td>{{ sem.name }}</td>
+            <td>
+                <button type="button" class="btn btn-sm btn-outline-secondary" 
+                        data-bs-toggle="modal" data-bs-target="#editSemesterModal"
+                        onclick="loadSemesterData({{ sem.id }}, {{ sem.academic_year.id }}, {{ sem.number }}, '{{ sem.name }}')">
+                    Edit
+                </button>
+                <form method="post" class="d-inline" onsubmit="return confirm('Delete this semester?')">
+                    {% csrf_token %}
+                    <input type="hidden" name="delete_id" value="{{ sem.id }}">
+                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="5">No semesters found.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% include 'attendance/widgets/pagination.html' with page_obj=semesters %}
+
+<!-- Add Semester Modal -->
+<div class="modal fade" id="addSemesterModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Semester</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" name="add" value="1">
+                    {{ add_form.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Semester</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Semester Modal -->
+<div class="modal fade" id="editSemesterModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Semester</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" name="update_id" id="edit_semester_id">
+                    <div class="mb-3">
+                        <label for="edit_academic_year" class="form-label">Academic Year</label>
+                        <select class="form-control" name="academic_year" id="edit_academic_year" required>
+                            {% for year in add_form.academic_year.field.queryset %}
+                                <option value="{{ year.id }}">{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_number" class="form-label">Number</label>
+                        <input type="number" class="form-control" name="number" id="edit_number" min="1" max="2" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_name" class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name" id="edit_name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Semester</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadSemesterData(id, academicYearId, number, name) {
+    document.getElementById('edit_semester_id').value = id;
+    document.getElementById('edit_academic_year').value = academicYearId;
+    document.getElementById('edit_number').value = number;
+    document.getElementById('edit_name').value = name;
+}
+
+{% if show_add_modal %}
+document.addEventListener('DOMContentLoaded', function() {
+    new bootstrap.Modal(document.getElementById('addSemesterModal')).show();
+});
+{% endif %}
+
+{% if show_update_modal %}
+document.addEventListener('DOMContentLoaded', function() {
+    new bootstrap.Modal(document.getElementById('editSemesterModal')).show();
+});
+{% endif %}
+</script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'attendance/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Teacher Dashboard</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5>Total Courses</h5>
+                        <h3>{{ total_courses }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-book fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>My Courses</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for course in courses %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card attendance-card">
+                            <div class="card-body">
+                                <h6>{{ course.course.name }}</h6>
+                                <p class="text-muted">{{ course.course.code }}</p>
+                                <p><small>Semester: {{ course.course.semester }}</small></p>
+                                <div class="btn-group w-100">
+                                    <a href="{% url 'mark_attendance' course.id %}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-check"></i> Mark Attendance
+                                    </a>
+                                    <a href="{% url 'attendance_history' course.id %}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-history"></i> History
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

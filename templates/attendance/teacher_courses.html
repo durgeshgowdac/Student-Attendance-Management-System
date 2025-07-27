@@ -1,0 +1,44 @@
+{% extends 'attendance/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">My Courses</h1>
+</div>
+
+<div class="row">
+    {% for course in courses %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card attendance-card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ course.course.name }}</h5>
+                <p class="card-text">
+                    <strong>Code:</strong> {{ course.course.code }}<br>
+                    <strong>Department:</strong> {{ course.course.department.name }}<br>
+                    <strong>Semester:</strong> {{ course.course.semester }}<br>
+                    <strong>Credits:</strong> {{ course.course.credits }}<br>
+                    <strong>Academic Year:</strong> {{ course.academic_year }}
+                </p>
+            </div>
+            <div class="card-footer">
+                <div class="btn-group w-100">
+                    <a href="{% url 'mark_attendance' course.id %}" class="btn btn-primary">
+                        <i class="fas fa-check-circle"></i> Mark Attendance
+                    </a>
+                    <a href="{% url 'attendance_history' course.id %}" class="btn btn-outline-primary">
+                        <i class="fas fa-history"></i> History
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if not courses %}
+<div class="text-center py-5">
+    <i class="fas fa-book fa-3x text-muted mb-3"></i>
+    <h4>No courses assigned</h4>
+    <p class="text-muted">Contact admin to assign courses to your account.</p>
+</div>
+{% endif %}
+{% endblock %}

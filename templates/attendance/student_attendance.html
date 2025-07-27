@@ -1,0 +1,45 @@
+{% extends 'attendance/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">My Attendance</h1>
+</div>
+
+{% for data in attendance_data %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>{{ data.course.name }} ({{ data.course.code }})</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Topic</th>
+                        <th>Status</th>
+                        <th>Marked By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attendance in data.attendances %}
+                    <tr>
+                        <td>{{ attendance.session.date }}</td>
+                        <td>{{ attendance.session.start_time }} - {{ attendance.session.end_time }}</td>
+                        <td>{{ attendance.session.topic|default:"N/A" }}</td>
+                        <td>
+                            <span class="badge {% if attendance.status == 'present' %}bg-success{% elif attendance.status == 'late' %}bg-warning{% else %}bg-danger{% endif %}">
+                                {{ attendance.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ attendance.marked_by.first_name }} {{ attendance.marked_by.last_name }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

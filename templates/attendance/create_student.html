@@ -1,0 +1,18 @@
+{% extends 'attendance/base.html' %}
+{% block content %}
+<div class="container py-4">
+    <h2>Create Student</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="mb-3">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                <div class="text-danger">{{ field.errors }}</div>
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Create Student</button>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2620/2620267.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Attendance Management System{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .content-wrapper {
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+        }
+        .nav-link:hover {
+            color: white !important;
+        }
+        .attendance-card {
+            transition: transform 0.2s;
+        }
+        .attendance-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <h4 class="text-white">AMS</h4>
+                        <p class="text-white-50">{{ user.get_role_display }}</p>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard' %}">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
+                        
+                        {% if user.role == 'teacher' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'teacher_courses' %}">
+                                <i class="fas fa-book"></i> My Courses
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% if user.role == 'student' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'student_attendance' %}">
+                                <i class="fas fa-calendar-check"></i> My Attendance
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% if user.role == 'admin' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin_reports' %}">
+                                <i class="fas fa-chart-bar"></i> Reports
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/">
+                                <i class="fas fa-cog"></i> Admin Panel
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        <li class="nav-item mt-auto">
+                            <a class="nav-link" href="{% url 'login' %}">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 content-wrapper">
+                <div class="pt-3">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

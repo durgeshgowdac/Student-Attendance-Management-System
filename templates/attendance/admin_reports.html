@@ -1,0 +1,78 @@
+{% extends 'attendance/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-4 border-bottom">
+    <h1 class="h2">Attendance Reports</h1>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Select Course</label>
+                <select class="form-select" name="course_id" onchange="this.form.submit()">
+                    <option value="">Select a course...</option>
+                    {% for course in courses %}
+                        <option value="{{ course.id }}" {% if course.id|stringformat:"s" == request.GET.course_id %}selected{% endif %}>
+                            {{ course.code }} - {{ course.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if course %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Attendance Report - {{ course.name }}</h5>
+        <span class="text-muted">{{ course.code }}</span>
+    </div>
+    <div class="card-body table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Student Name</th>
+                    <th>Student ID</th>
+                    <th>Total Classes</th>
+                    <th>Attended</th>
+                    <th>%</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in report_data %}
+                <tr>
+                    <td>{{ data.student.get_full_name|default:data.student.username }}</td>
+                    <td>{{ data.student.student_id }}</td>
+                    <td>{{ data.total_sessions }}</td>
+                    <td>{{ data.attended_sessions }}</td>
+                    <td>
+                        <span class="badge {% if data.percentage >= 75 %}bg-success
+                                            {% elif data.percentage >= 50 %}bg-warning
+                                            {% else %}bg-danger{% endif %}">
+                            {{ data.percentage }}%
+                        </span>
+                    </td>
+                    <td>
+                        {% if data.percentage >= 75 %}
+                            <span class="text-success">Good</span>
+                        {% elif data.percentage >= 50 %}
+                            <span class="text-warning">Average</span>
+                        {% else %}
+                            <span class="text-danger">Poor</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No data available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,29 @@
+<h5>Session on {{ session.date }} | {{ session.start_time }} - {{ session.end_time }}</h5>
+<p><strong>Topic:</strong> {{ session.topic|default:"N/A" }}</p>
+
+<table class="table table-bordered table-sm mt-3">
+    <thead>
+        <tr>
+            <th>Student</th>
+            <th>Status</th>
+            <th>Marked At</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in records %}
+        <tr>
+            <td>{{ record.student.username }}</td>
+            <td>
+                {% if record.status == 'present' %}
+                    <span class="badge bg-success">Present</span>
+                {% elif record.status == 'late' %}
+                    <span class="badge bg-warning">Late</span>
+                {% else %}
+                    <span class="badge bg-danger">Absent</span>
+                {% endif %}
+            </td>
+            <td>{{ record.marked_at|date:"d M Y, H:i" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

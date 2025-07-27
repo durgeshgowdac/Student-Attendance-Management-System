@@ -1,0 +1,100 @@
+{% extends 'attendance/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Attendance History - {{ teacher_course.course.name }}</h1>
+    <a href="{% url 'teacher_courses' %}" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left"></i> Back to Courses
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Topic</th>
+                        <th>Total Students</th>
+                        <th>Present</th>
+                        <th>Late</th>
+                        <th>Absent</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in sessions %}
+                    <tr>
+                        <td>{{ session.date }}</td>
+                        <td>{{ session.start_time }} - {{ session.end_time }}</td>
+                        <td>{{ session.topic|default:"N/A" }}</td>
+                        <td>{{ session.attendance_set.count }}</td>
+                        <td><span class="badge bg-success">{{ session.present_count }}</span></td>
+                        <td><span class="badge bg-warning">{{ session.late_count }}</span></td>
+                        <td><span class="badge bg-danger">{{ session.absent_count }}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="viewDetails({{ session.id }})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Attendance Detail Modal -->
+<div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="attendanceModalLabel">Attendance Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="attendanceModalBody">
+        <!-- Dynamic content loads here -->
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+function viewDetails(sessionId) {
+    const modalBody = document.getElementById('attendanceModalBody');
+    modalBody.innerHTML = `
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>`;
+
+    const url = `/ajax/session-attendance/${sessionId}/`;
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) throw new Error("Network error");
+            return response.text();
+        })
+        .then(data => {
+            modalBody.innerHTML = data;
+        })
+        .catch(() => {
+            modalBody.innerHTML = `<div class="alert alert-danger">Unable to load details. Please try again later.</div>`;
+        });
+
+    const modal = new bootstrap.Modal(document.getElementById('attendanceModal'));
+    modal.show();
+}
+</script>
+
+{% endblock %}

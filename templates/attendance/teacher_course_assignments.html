@@ -1,0 +1,135 @@
+{% extends 'attendance/base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Teacher Course Assignments</h2>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAssignmentModal">
+        Assign Teacher to Course
+    </button>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Teacher</th>
+            <th>Course</th>
+            <th>Academic Year</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for assignment in assignments %}
+        <tr>
+            <td>{{ assignment.teacher.get_full_name }} ({{ assignment.teacher.username }})</td>
+            <td>{{ assignment.course.code }} - {{ assignment.course.name }}</td>
+            <td>{{ assignment.academic_year }}</td>
+            <td>
+                <button type="button" class="btn btn-sm btn-outline-secondary" 
+                        data-bs-toggle="modal" data-bs-target="#editAssignmentModal"
+                        onclick="loadAssignmentData({{ assignment.id }}, {{ assignment.teacher.id }}, {{ assignment.course.id }}, {{ assignment.academic_year.id }})">
+                    Edit
+                </button>
+                <form method="post" class="d-inline" onsubmit="return confirm('Delete this assignment?')">
+                    {% csrf_token %}
+                    <input type="hidden" name="delete_id" value="{{ assignment.id }}">
+                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="4">No assignments found.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% include 'attendance/widgets/pagination.html' with page_obj=assignments %}
+
+<!-- Add Assignment Modal -->
+<div class="modal fade" id="addAssignmentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign Teacher to Course</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" name="add" value="1">
+                    {{ add_form.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Assign</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Assignment Modal -->
+<div class="modal fade" id="editAssignmentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Assignment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" name="update_id" id="edit_assignment_id">
+                    <div class="mb-3">
+                        <label for="edit_teacher" class="form-label">Teacher</label>
+                        <select class="form-control" name="teacher" id="edit_teacher" required>
+                            {% for teacher in add_form.teacher.field.queryset %}
+                                <option value="{{ teacher.id }}">{{ teacher.get_full_name }} ({{ teacher.username }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_course" class="form-label">Course</label>
+                        <select class="form-control" name="course" id="edit_course" required>
+                            {% for course in add_form.course.field.queryset %}
+                                <option value="{{ course.id }}">{{ course.code }} - {{ course.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_academic_year" class="form-label">Academic Year</label>
+                        <select class="form-control" name="academic_year" id="edit_academic_year" required>
+                            {% for year in add_form.academic_year.field.queryset %}
+                                <option value="{{ year.id }}">{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Assignment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadAssignmentData(id, teacherId, courseId, academicYearId) {
+    document.getElementById('edit_assignment_id').value = id;
+    document.getElementById('edit_teacher').value = teacherId;
+    document.getElementById('edit_course').value = courseId;
+    document.getElementById('edit_academic_year').value = academicYearId;
+}
+
+{% if show_add_modal %}
+document.addEventListener('DOMContentLoaded', function() {
+    new bootstrap.Modal(document.getElementById('addAssignmentModal')).show();
+});
+{% endif %}
+
+{% if show_update_modal %}
+document.addEventListener('DOMContentLoaded', function() {
+    new bootstrap.Modal(document.getElementById('editAssignmentModal')).show();
+});
+{% endif %}
+</script>
+{% endblock %}
