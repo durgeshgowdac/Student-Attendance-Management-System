@@ -183,4 +183,7 @@ For more detailed testing information, refer to the TEST_README.md file.
 
 ## License
 
-[Specify the license under which the project is distributed]
+This project is licensed under the **MIT License**.  
+You are free to use, modify, and distribute this software in both personal and commercial projects, as long as you include the original license.
+
+See the [LICENSE](LICENSE) file for full details.
