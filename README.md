@@ -42,7 +42,7 @@ A comprehensive Django-based web application for managing student attendance in 
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/durgeshgowdac/Student-Attendance-Management-System.git
    cd nirvana
    ```
 
