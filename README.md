@@ -181,6 +181,12 @@ For more detailed testing information, refer to the TEST_README.md file.
 3. Follow Django's coding style and best practices
 4. Update documentation for new features
 
+## Contributors
+
+1. Akash M
+2. Durgesh Gowda
+3. Harish
+
 ## License
 
 This project is licensed under the **PES License**.  
