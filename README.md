@@ -183,7 +183,7 @@ For more detailed testing information, refer to the TEST_README.md file.
 
 ## License
 
-This project is licensed under the **MIT License**.  
+This project is licensed under the **PES License**.  
 You are free to use, modify, and distribute this software in both personal and commercial projects, as long as you include the original license.
 
 See the [LICENSE](LICENSE) file for full details.
