@@ -1,0 +1,35 @@
+version = 1
+
+# Global patterns for files/directories to exclude from analysis
+exclude_patterns = [
+    "**/migrations/*.py",        # Django auto-generated migration files
+    "**/__pycache__/**",         # Python bytecode cache
+    "**/*.pyc",                  # Compiled Python files
+    "**/venv/**",                # Virtual environment directories
+    "**/env/**",                 # Environment directories
+    "**/.env/**",                # Environment variable files
+    "staticfiles/**",            # Collected static files (production)
+    "media/**"                   # User-uploaded media files
+]
+
+# Glob patterns to identify test files for accurate analysis
+test_patterns = [
+    "**/test_*.py",              # Django test files (test_models.py, etc.)
+    "**/test.py",                # Generic test files
+    "**/tests.py",               # Django app tests.py files
+    "**/tests/**/*.py"           # Test subdirectories
+]
+
+# Enable the Python analyzer (core for Django projects)
+[[analyzers]]
+name = "python"
+enabled = true
+
+    [analyzers.meta]
+    # Set Python runtime version (3.8+ as per project requirements)
+    runtime_version = "3.x.x"
+
+# Enable secret detection to prevent accidental commits of sensitive data
+[[analyzers]]
+name = "secrets"
+enabled = true
