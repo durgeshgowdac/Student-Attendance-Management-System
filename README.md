@@ -183,8 +183,9 @@ For more detailed testing information, refer to the TEST_README.md file.
 
 ## Contributors
 
-1. Akash M
-2. Durgesh Gowda
+Team Nirvana
+1. Durgesh Gowda C (Team Lead)
+2. Akash M
 3. Harish
 
 ## License
