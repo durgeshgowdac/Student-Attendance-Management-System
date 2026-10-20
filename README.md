@@ -183,10 +183,11 @@ For more detailed testing information, refer to the TEST_README.md file.
 
 ## Contributors
 
-Team Nirvana
-1. Durgesh Gowda C (Team Lead)
-2. Akash M
-3. Harish
+**Team Nirvana**
+
+1. [Durgesh Gowda C (Team Lead)](https://github.com/durgeshgowdac)
+2. [Akash M](https://github.com/akashpadmashali)
+3. [Harish Murti](https://github.com/harishmurthi)
 
 ## License
 
